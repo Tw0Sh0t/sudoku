@@ -30,8 +30,6 @@ bool sudoku::solve_helper(){
     bool solved;
     int ridx=0;
     int cidx=0;
-    int nridx;
-    int ncidx;
     //find first available position
     while(puzzle[ridx][cidx] !=0){
         cidx++;
@@ -43,42 +41,24 @@ bool sudoku::solve_helper(){
             return true;
         }
     }
-    //calculate neighborhood of number
-    if(ridx>-1 && ridx<3){
-        nridx=0;
-    }
-    else if(ridx>2 && ridx<6){
-        nridx=3;
-    }
-    else if(ridx>5 && ridx<9){
-        nridx=6;
-    }
-    if(cidx>-1 && cidx<3){
-        ncidx=0;
-    }
-    else if(cidx>2 && cidx<6){
-        ncidx=3;
-    }
-    else if(cidx>5 && cidx<9){
-        ncidx=6;
-    }
+
     for(int number=1; number<10; number++){
         solved=true;
         //place number
-        puzzle[ridx][cidx]=number;
-        //check if state is valid
-        //check col for duplicates
-        for(int row=0; row<9; row++){
+        puzzle[ridx][cidx]=number; 
+        //check for duplicates in column
+        for(int row=0; row<9; row++){   
             if(row == ridx){
                 continue;
             }
+            //let program know the state is not valid
             if(puzzle[row][cidx] == number){
                 solved=false;
                 break;
             }
         }
         //check row for duplicates
-        for(int col=0; col<9; col++){
+        for(int col=0; col<9; col++){   
             if(col == cidx){
                 continue;
             }
@@ -87,13 +67,13 @@ bool sudoku::solve_helper(){
                 break;
             }
         }
-        //check neighborhoods
-        for(int row=nridx; row<nridx+3; row++){
-            for(int col=ncidx; col<ncidx+3; col++){
-                if(col == cidx && row == ridx){
+        //check the 3x3 neighborhood
+        for(int row=0; row<3; row++){   
+            for(int col=0; col<3; col++){
+                if(col+cidx-cidx%3 == cidx && row+ridx-ridx%3 == ridx){
                     continue;
                 }
-                if(puzzle[row][col]==number){
+                if(puzzle[row+ridx-ridx%3][col+cidx-cidx%3]==number){
                     solved= false;
                 }
             }
@@ -102,13 +82,14 @@ bool sudoku::solve_helper(){
             continue;
         }
         else{
+            //go to the next number
             solved=solve_helper();
            if(solved){
                return true;
            }
         }
     }
-     //undo placed number
+    //undo placement of number
     puzzle[ridx][cidx]=0;
     return false;
 }
