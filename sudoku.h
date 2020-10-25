@@ -6,7 +6,7 @@ class sudoku{
         int puzzle[9][9];
         bool empty;
         bool solve_helper();
-        bool check_state(const int& row, const int& col, const int& number);
+        bool check_state(const int& ridx, const int& cidx, const int& number);
     public:
         sudoku();
         sudoku(int puzzle_in[9][9]);
