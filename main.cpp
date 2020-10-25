@@ -6,7 +6,7 @@
 
 int main(int argc,char** argv){
     if(argc !=3){
-        std::cout<<"Usage: ./prog <fnamein> <fnameout>\n";
+        std::cout<<"Usage: ./<program_name> <fnamein> <fnameout>\n";
         std::cout<<"<fnamein>: Input file name\n";
         std::cout<<"<fnameout>: Output file name\n";
         std::cout<<"Separate all numbers in grid with a single space with all empty slots being represented as a zero.\n";
@@ -27,17 +27,6 @@ int main(int argc,char** argv){
         }
         ridx++;
     }
-    /* Debugging
-    for(int i=0; i<9; i++){
-        for(int j=0; j<9; j++){
-            std::cout<<puzzle[i][j];
-            if(j<8){
-                std::cout<<" ";
-            }
-        }
-        std::cout<<std::endl;
-    }
-    */
     sudoku sudoku_puzzle(puzzle);
     sudoku_puzzle.solve();
     sudoku_puzzle.save(argv[2]);
