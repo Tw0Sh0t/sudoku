@@ -26,8 +26,35 @@ void sudoku::set(int puzzle_in[9][9]){
     }
 }
 
+bool sudoku::check_state(const int& ridx, const int& cidx, const int& num){
+    //Check if desired location is empty
+    if(puzzle[ridx][cidx] !=0 ){
+        return false;
+    }
+    //check col for duplicates
+    for(int row=0; row<9; row++){
+        if(puzzle[row][cidx] == num){
+            return false;
+        }
+    }
+    //check row for duplicates
+    for(int col=0; col<9; col++){
+        if(puzzle[ridx][col]== num){
+            return false;
+        }
+    }
+    //check the 3x3 neighborhood
+    for(int row=0; row<3; row++){
+        for(int col=0; col<3; col++){
+            if(puzzle[row+ridx-ridx%3][col+cidx-cidx%3]==num){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 bool sudoku::solve_helper(){
-    bool solved;
     int ridx=0;
     int cidx=0;
     //find first available position
@@ -43,54 +70,18 @@ bool sudoku::solve_helper(){
     }
 
     for(int number=1; number<10; number++){
-        solved=true;
-        //place number
-        puzzle[ridx][cidx]=number; 
-        //check for duplicates in column
-        for(int row=0; row<9; row++){   
-            if(row == ridx){
-                continue;
-            }
-            //let program know the state is not valid
-            if(puzzle[row][cidx] == number){
-                solved=false;
-                break;
-            }
-        }
-        //check row for duplicates
-        for(int col=0; col<9; col++){   
-            if(col == cidx){
-                continue;
-            }
-            if(puzzle[ridx][col]== number){
-                solved=false;
-                break;
-            }
-        }
-        //check the 3x3 neighborhood
-        for(int row=0; row<3; row++){   
-            for(int col=0; col<3; col++){
-                if(col+cidx-cidx%3 == cidx && row+ridx-ridx%3 == ridx){
-                    continue;
-                }
-                if(puzzle[row+ridx-ridx%3][col+cidx-cidx%3]==number){
-                    solved= false;
-                }
-            }
-        }
-        if(solved == false){
-            continue;
-        }
-        else{
-            //go to the next number
-            solved=solve_helper();
-           if(solved){
-               return true;
-           }
+        if(check_state(ridx,cidx,number)){
+          //place number
+          puzzle[ridx][cidx]=number;
+          if(solve_helper()){
+              return true;
+          }
+          else{
+              //undo placed number
+              puzzle[ridx][cidx]=0;
+          }
         }
     }
-    //undo placement of number
-    puzzle[ridx][cidx]=0;
     return false;
 }
 
